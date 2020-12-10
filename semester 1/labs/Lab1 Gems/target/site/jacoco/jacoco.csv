@@ -1,0 +1,13 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Lab1Gems,com.rmv.oop.lab1.main.model,SapphireColor,0,54,0,0,0,6,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,Pearl,0,8,0,0,0,3,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,DiamondColor,0,74,0,0,0,8,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,Necklace,0,102,0,12,0,17,0,8,0,2
+Lab1Gems,com.rmv.oop.lab1.main.model,Diamond,0,8,0,0,0,3,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,Sapphire,0,8,0,0,0,3,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,Gem,0,9,0,0,0,4,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main.model,PearlColor,0,64,0,0,0,7,0,1,0,1
+Lab1Gems,com.rmv.oop.lab1.main,Main,27,0,0,0,7,0,3,0,3,0
+Lab1Gems,com.rmv.oop.lab1.main.service,GemMiningService,0,84,0,3,0,17,0,6,0,4
+Lab1Gems,com.rmv.oop.lab1.main.service,GemEvaluationService,0,45,0,4,0,11,0,5,0,3
+Lab1Gems,com.rmv.oop.lab1.main.service,NecklaceCreationService,0,67,0,2,0,16,0,4,0,3

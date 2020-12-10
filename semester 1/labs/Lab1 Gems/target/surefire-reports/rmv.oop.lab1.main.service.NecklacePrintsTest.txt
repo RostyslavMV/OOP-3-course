@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: rmv.oop.lab1.main.service.NecklacePrintsTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.039 s - in rmv.oop.lab1.main.service.NecklacePrintsTest

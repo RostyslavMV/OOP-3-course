@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LockFreeSkipList.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LockFreeSkipList</a> &gt; <a href="index.source.html" class="el_package">com.rmv.oop.task5.model</a> &gt; <span class="el_source">LockFreeSkipList.java</span></div><h1>LockFreeSkipList.java</h1><pre class="source lang-java linenums">package com.rmv.oop.task5.model;
+
+import lombok.Getter;
+
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicMarkableReference;
+
+public class LockFreeSkipList&lt;T&gt; {
+    @Getter
+    private static final int MAX_HEIGHT = 32;
+<span class="fc" id="L11">    private static final Random random = new Random();</span>
+
+<span class="fc" id="L13">    private final Node&lt;T&gt; firstNode = new Node&lt;&gt;(Integer.MIN_VALUE);</span>
+<span class="fc" id="L14">    private final Node&lt;T&gt; lastNode = new Node&lt;&gt;(Integer.MAX_VALUE);</span>
+
+<span class="fc" id="L16">    public LockFreeSkipList() {</span>
+<span class="fc bfc" id="L17" title="All 2 branches covered.">        for (int i = 0; i &lt; firstNode.getNext().length; i++) {</span>
+<span class="fc" id="L18">            firstNode.getNext()[i] = new AtomicMarkableReference&lt;&gt;(lastNode, false);</span>
+        }
+<span class="fc" id="L20">    }</span>
+
+    public boolean add(T value) {
+<span class="fc" id="L23">        int topLevel = getRandomHeight();</span>
+<span class="fc" id="L24">        int bottomLevel = 0;</span>
+<span class="fc" id="L25">        Node&lt;T&gt;[] prev = (Node&lt;T&gt;[])new Node[MAX_HEIGHT + 1];</span>
+<span class="fc" id="L26">        Node&lt;T&gt;[] successors =(Node&lt;T&gt;[]) new Node[MAX_HEIGHT + 1];</span>
+        while (true) {
+<span class="fc" id="L28">            boolean found = findPrevAndSuccessors(value, prev, successors);</span>
+<span class="pc bpc" id="L29" title="1 of 2 branches missed.">            if (found) {</span>
+<span class="nc" id="L30">                return false;</span>
+            } else {
+<span class="fc" id="L32">                Node&lt;T&gt; newNode = new Node&lt;&gt;(value, topLevel);</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                for (int level = bottomLevel; level &lt;= topLevel; level++) {</span>
+<span class="fc" id="L34">                    Node&lt;T&gt; successor = successors[level];</span>
+<span class="fc" id="L35">                    newNode.getNext()[level].set(successor, false);</span>
+                }
+<span class="fc" id="L37">                Node&lt;T&gt; previousNode = prev[bottomLevel];</span>
+<span class="fc" id="L38">                Node&lt;T&gt; successor = successors[bottomLevel];</span>
+<span class="fc" id="L39">                newNode.getNext()[bottomLevel].set(successor, false);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">                if (!previousNode.getNext()[bottomLevel].compareAndSet(successor, newNode,</span>
+                        false, false)) {
+<span class="fc" id="L42">                    continue;</span>
+                }
+<span class="fc bfc" id="L44" title="All 2 branches covered.">                for (int level = bottomLevel+1; level &lt;= topLevel; level++) {</span>
+                    while (true) {
+<span class="fc" id="L46">                        previousNode = prev[level];</span>
+<span class="fc" id="L47">                        successor = successors[level];</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">                        if (previousNode.getNext()[level].compareAndSet(successor, newNode, false, false))</span>
+<span class="fc" id="L49">                            break;</span>
+<span class="fc" id="L50">                        findPrevAndSuccessors(value, prev, successors);</span>
+                    }
+                }
+<span class="fc" id="L53">                return true;</span>
+            }
+        }
+    }
+
+    public boolean remove(T value) {
+<span class="fc" id="L59">        int bottomLevel = 0;</span>
+<span class="fc" id="L60">        Node&lt;T&gt;[] prev = (Node&lt;T&gt;[]) new Node[MAX_HEIGHT + 1];</span>
+<span class="fc" id="L61">        Node&lt;T&gt;[] successors = (Node&lt;T&gt;[]) new Node[MAX_HEIGHT + 1];</span>
+        Node&lt;T&gt; successor;
+       // while (true) {
+<span class="fc" id="L64">            boolean found = findPrevAndSuccessors(value, prev, successors);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">            if (!found) {</span>
+<span class="fc" id="L66">                return false;</span>
+            } else {
+<span class="fc" id="L68">                Node&lt;T&gt; nodeToRemove = successors[bottomLevel];</span>
+<span class="fc" id="L69">                for (int level = nodeToRemove.getTowerHeight();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">                     level &gt;= bottomLevel+1; level--) {</span>
+<span class="fc" id="L71">                    boolean[] marked = {false};</span>
+<span class="fc" id="L72">                    successor = nodeToRemove.getNext()[level].get(marked);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">                    while (!marked[0]) {</span>
+<span class="fc" id="L74">                        nodeToRemove.getNext()[level].attemptMark(successor, true);</span>
+<span class="fc" id="L75">                        successor = nodeToRemove.getNext()[level].get(marked);</span>
+                    }
+                }
+<span class="fc" id="L78">                boolean[] marked = {false};</span>
+<span class="fc" id="L79">                successor = nodeToRemove.getNext()[bottomLevel].get(marked);</span>
+                while (true) {
+<span class="fc" id="L81">                    boolean iMarkedIt =</span>
+<span class="fc" id="L82">                            nodeToRemove.getNext()[bottomLevel].compareAndSet(successor, successor,</span>
+                                    false, true);
+<span class="fc" id="L84">                    successor = successors[bottomLevel].getNext()[bottomLevel].get(marked);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">                    if (iMarkedIt) {</span>
+<span class="fc" id="L86">                        findPrevAndSuccessors(value, prev, successors);</span>
+<span class="fc" id="L87">                        return true;</span>
+                    }
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                    else if (marked[0]) return false;</span>
+<span class="nc" id="L90">                }</span>
+            }
+       // }
+    }
+
+    private boolean findPrevAndSuccessors(T value, Node&lt;T&gt;[] prev, Node&lt;T&gt;[] successors) {
+<span class="fc" id="L96">        int bottomLevel = 0;</span>
+<span class="fc" id="L97">        int key = value.hashCode();</span>
+<span class="fc" id="L98">        boolean[] marked = {false};</span>
+        boolean snip;
+<span class="fc" id="L100">        Node&lt;T&gt; previousNode, curr = null, successor;</span>
+        outer:
+        while (true) {
+<span class="fc" id="L103">            previousNode = firstNode;</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">            for (int level = MAX_HEIGHT; level &gt;= bottomLevel; level--) {</span>
+<span class="fc" id="L105">                curr = previousNode.getNext()[level].getReference();</span>
+                while (true) {
+<span class="fc" id="L107">                    successor = curr.getNext()[level].get(marked);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">                    while (marked[0]) {</span>
+<span class="fc" id="L109">                        snip = previousNode.getNext()[level].compareAndSet(curr, successor,</span>
+                                false, false);
+<span class="fc bfc" id="L111" title="All 2 branches covered.">                        if (!snip) continue outer;</span>
+<span class="fc" id="L112">                        curr = previousNode.getNext()[level].getReference();</span>
+<span class="fc" id="L113">                        successor = curr.getNext()[level].get(marked);</span>
+                    }
+<span class="fc bfc" id="L115" title="All 2 branches covered.">                    if (curr.getKey() &lt; key){</span>
+<span class="fc" id="L116">                        previousNode = curr; curr = successor;</span>
+                    } else {
+                        break;
+                    }
+                }
+<span class="fc" id="L121">                prev[level] = previousNode;</span>
+<span class="fc" id="L122">                successors[level] = curr;</span>
+            }
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            return (curr.getKey() == key);</span>
+        }
+    }
+
+    public boolean contains(T value) {
+<span class="fc" id="L129">        int valueHash = value.hashCode();</span>
+<span class="fc" id="L130">        boolean[] marked = {false};</span>
+<span class="fc" id="L131">        Node&lt;T&gt; pred = firstNode, curr = null, successor;</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">        for (int level = MAX_HEIGHT; level &gt;= 0; level--) {</span>
+<span class="fc" id="L133">            curr = pred.getNext()[level].getReference();</span>
+            while (true) {
+<span class="fc" id="L135">                successor = curr.getNext()[level].get(marked);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">                while (marked[0]) {</span>
+<span class="nc" id="L137">                    curr = pred.getNext()[level].getReference();</span>
+<span class="nc" id="L138">                    successor = curr.getNext()[level].get(marked);</span>
+                }
+<span class="fc bfc" id="L140" title="All 2 branches covered.">                if (curr.getKey() &lt; valueHash){</span>
+<span class="fc" id="L141">                    pred = curr;</span>
+<span class="fc" id="L142">                    curr = successor;</span>
+                } else {
+                    break;
+                }
+            }
+        }
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        return (curr.getKey() == valueHash);</span>
+    }
+
+    private int getRandomHeight() {
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">        for (int i = 0; i &lt; MAX_HEIGHT; i++) {</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">            if (random.nextBoolean()) {</span>
+<span class="fc" id="L154">                return i;</span>
+            }
+        }
+<span class="nc" id="L157">        return MAX_HEIGHT - 1;</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

@@ -1,0 +1,5 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+MichaelScottNonBlockingQueue,com.rmv.oop.task6,MichaelScottNonBlockingQueue.Node,0,19,0,0,0,6,0,2,0,2
+MichaelScottNonBlockingQueue,com.rmv.oop.task6,Node,15,0,0,0,6,0,2,0,2,0
+MichaelScottNonBlockingQueue,com.rmv.oop.task6,MichaelScottNonBlockingQueue,7,119,1,13,1,33,1,10,0,4
+MichaelScottNonBlockingQueue,com.rmv.oop.task6,Main,94,0,8,0,28,0,10,0,6,0

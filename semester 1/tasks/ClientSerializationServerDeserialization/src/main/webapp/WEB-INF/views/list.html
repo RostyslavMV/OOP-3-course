@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+    table, th, td {
+        border: 1px solid black;
+    }
+    td,th{
+        padding: 2px;
+    }
+    .Link{
+        font-size: 18px;
+    }
+</style>
+<body>
+<a class="Link" href="/">Home</a>
+<a class="Link" href="/form">Form</a>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Age</th>
+    </tr>
+    <tr th:each="student : ${students}">
+        <td th:text="${student.getName()}">Name</td>
+        <td th:text="${student.getSurName()}">Surname</td>
+        <td th:text="${student.getAge()}">18</td>
+    </tr>
+</table>
+</body>
+</html>

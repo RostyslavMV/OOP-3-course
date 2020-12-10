@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NecklaceCreationService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Lab1Gems</a> &gt; <a href="index.source.html" class="el_package">com.rmv.oop.lab1.main.service</a> &gt; <span class="el_source">NecklaceCreationService.java</span></div><h1>NecklaceCreationService.java</h1><pre class="source lang-java linenums">package com.rmv.oop.lab1.main.service;
+
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.rmv.oop.lab1.main.model.Gem;
+import com.rmv.oop.lab1.main.model.Necklace;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+@Service
+public class NecklaceCreationService {
+    private final GemMiningService gemMiningService;
+    private final GemEvaluationService gemEvaluationService;
+
+    public Necklace createNecklace(Integer gemCount) {
+<span class="fc" id="L22">        List&lt;Gem&gt; gems = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for (int i = 0; i &lt; gemCount; i++) {</span>
+<span class="fc" id="L25">            gems.add(gemMiningService.mineGem());</span>
+        }
+<span class="fc" id="L27">        BigDecimal price = getNecklacePrice(gems);</span>
+<span class="fc" id="L28">        BigDecimal weight = getNecklaceWeight(gems);</span>
+
+<span class="fc" id="L30">        gems = gems.stream().sorted(Comparator.</span>
+<span class="fc" id="L31">                comparing(Gem::getPrice)).collect(Collectors.toList());</span>
+
+<span class="fc" id="L33">        return new Necklace(gems, price, weight);</span>
+    }
+
+    public BigDecimal getNecklacePrice(List&lt;Gem&gt; gems) {
+<span class="fc" id="L37">        return gems.stream()</span>
+<span class="fc" id="L38">                .map(gemEvaluationService::evaluatePrice)</span>
+<span class="fc" id="L39">                .reduce(BigDecimal::add)</span>
+<span class="fc" id="L40">                .orElse(BigDecimal.ZERO);</span>
+    }
+
+    public BigDecimal getNecklaceWeight(List&lt;Gem&gt; gems) {
+<span class="fc" id="L44">        return gems.stream()</span>
+<span class="fc" id="L45">                .map(Gem::getWeight)</span>
+<span class="fc" id="L46">                .reduce(BigDecimal::add)</span>
+<span class="fc" id="L47">                .orElse(BigDecimal.ZERO);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

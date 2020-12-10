@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Necklace.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Lab1Gems</a> &gt; <a href="index.source.html" class="el_package">rmv.oop.lab1.main.model</a> &gt; <span class="el_source">Necklace.java</span></div><h1>Necklace.java</h1><pre class="source lang-java linenums">package rmv.oop.lab1.main.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@AllArgsConstructor
+@Getter
+@Setter
+public class Necklace {
+    private List&lt;Gem&gt; gems;
+    private BigDecimal price;
+    private BigDecimal weight;
+
+    public void print() {
+<span class="fc" id="L19">        System.out.println(&quot;Necklace price = &quot; + price);</span>
+<span class="fc" id="L20">        System.out.println(&quot;Necklace weight = &quot; + weight);</span>
+<span class="fc" id="L21">        System.out.println(&quot;Necklace contains these gems:&quot;);</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">        for (Gem gem : gems) {</span>
+<span class="fc" id="L23">            System.out.println(gem);</span>
+<span class="fc" id="L24">        }</span>
+<span class="fc" id="L25">    }</span>
+
+    public void printWithClarity(BigDecimal minClarity, BigDecimal maxClarity) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (minClarity.compareTo(BigDecimal.ZERO) &lt; 0) {</span>
+<span class="fc" id="L29">            throw new UnsupportedOperationException(&quot;minClarity less than zero&quot;);</span>
+        }
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (maxClarity.compareTo(new BigDecimal(&quot;100&quot;)) &gt; 0) {</span>
+<span class="fc" id="L32">            throw new UnsupportedOperationException(&quot;maxClarity is more than zero&quot;);</span>
+        }
+<span class="fc" id="L34">        System.out.println(&quot;Gems with clarity between &quot; + minClarity + &quot; and &quot; + maxClarity);</span>
+<span class="fc bfc" id="L35" title="All 2 branches covered.">        for (Gem gem : gems) {</span>
+<span class="fc bfc" id="L36" title="All 4 branches covered.">            if (gem.getClarity().compareTo(minClarity) &gt; 0 &amp;&amp; gem.getClarity().compareTo(maxClarity) &lt; 0) {</span>
+<span class="fc" id="L37">                System.out.println(gem);</span>
+            }
+<span class="fc" id="L39">        }</span>
+<span class="fc" id="L40">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

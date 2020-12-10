@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="uk"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClassInfoService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ClassInfo</a> &gt; <a href="index.source.html" class="el_package">rmv.oop.task4.service</a> &gt; <span class="el_source">ClassInfoService.java</span></div><h1>ClassInfoService.java</h1><pre class="source lang-java linenums">package rmv.oop.task4.service;
+
+import org.springframework.stereotype.Service;
+import rmv.oop.task4.classLoader.CustomClassLoader;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L14">public class ClassInfoService {</span>
+
+    public void printClassInfo(String classFilePath, String classWithPackage) {
+<span class="fc" id="L17">        System.out.println(&quot;Class file path: &quot; + classFilePath +</span>
+                &quot;. Class with package: &quot; + classWithPackage);
+<span class="fc" id="L19">        CustomClassLoader customClassLoader = new CustomClassLoader(classFilePath);</span>
+        Class loadedClass;
+
+        try {
+<span class="fc" id="L23">            loadedClass = customClassLoader.loadClass(classWithPackage);</span>
+<span class="nc" id="L24">        } catch (ClassNotFoundException e) {</span>
+<span class="nc" id="L25">            System.out.println(&quot;Class not found&quot;);</span>
+<span class="nc" id="L26">            return;</span>
+<span class="fc" id="L27">        }</span>
+
+<span class="fc" id="L29">        int classModifiers = loadedClass.getModifiers();</span>
+<span class="fc" id="L30">        System.out.println(Modifier.toString(classModifiers) + &quot; &quot; + loadedClass.getName());</span>
+<span class="fc" id="L31">        printFields(loadedClass);</span>
+<span class="fc" id="L32">        printConstructors(loadedClass);</span>
+<span class="fc" id="L33">        printMethods(loadedClass);</span>
+<span class="fc" id="L34">    }</span>
+
+    private void printFields(Class aClass) {
+<span class="pc bpc" id="L37" title="1 of 2 branches missed.">        if (aClass.getDeclaredFields().length &gt; 0) {</span>
+<span class="fc" id="L38">            System.out.println(&quot;-------------&quot;);</span>
+<span class="fc" id="L39">            System.out.println(&quot;Fields:&quot;);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">            for (Field field : aClass.getDeclaredFields()) {</span>
+<span class="fc" id="L41">                int modifiers = field.getModifiers();</span>
+<span class="fc" id="L42">                System.out.println(Modifier.toString(modifiers) + &quot; &quot; +</span>
+<span class="fc" id="L43">                        field.getType().getName() + &quot; &quot; +field.getName());</span>
+            }
+        }
+<span class="fc" id="L46">    }</span>
+
+    private void printConstructors(Class aClass) {
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (aClass.getConstructors().length &gt; 0) {</span>
+<span class="fc" id="L50">            System.out.println(&quot;-------------&quot;);</span>
+<span class="fc" id="L51">            System.out.println(&quot;Constructors:&quot;);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (Constructor constructor : aClass.getConstructors()) {</span>
+<span class="fc" id="L53">                int modifiers = constructor.getModifiers();</span>
+<span class="fc" id="L54">                System.out.println(Modifier.toString(modifiers) + &quot; &quot; + constructor.getName());</span>
+<span class="fc" id="L55">                System.out.println(&quot; Parameters types: &quot; +</span>
+<span class="fc" id="L56">                        Arrays.stream(constructor.getParameterTypes())</span>
+<span class="fc" id="L57">                                .map(Class::getName)</span>
+<span class="fc" id="L58">                                .collect(Collectors.joining(&quot;, &quot;)));</span>
+<span class="fc" id="L59">                System.out.println(&quot;---&quot;);</span>
+            }
+        }
+<span class="fc" id="L62">    }</span>
+
+    private void printMethods(Class aClass) {
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if (aClass.getMethods().length &gt; 0) {</span>
+<span class="fc" id="L66">            System.out.println(&quot;-------------&quot;);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">            for (Method method : aClass.getMethods()) {</span>
+<span class="fc" id="L68">                int modifiers = method.getModifiers();</span>
+<span class="fc" id="L69">                System.out.println(Modifier.toString(modifiers) + &quot; &quot; + method.getName());</span>
+<span class="fc" id="L70">                System.out.println(&quot; Parameters types: &quot; +</span>
+<span class="fc" id="L71">                        Arrays.stream(method.getParameterTypes())</span>
+<span class="fc" id="L72">                                .map(Class::getName)</span>
+<span class="fc" id="L73">                                .collect(Collectors.joining(&quot;, &quot;)));</span>
+<span class="fc" id="L74">                System.out.println(&quot;---&quot;);</span>
+            }
+        }
+<span class="fc" id="L77">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
